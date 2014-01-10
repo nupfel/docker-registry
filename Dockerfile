@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # redis
-run apt-get install -y redis-server
+run apt-get install -y --force-yes redis-server
 add redis.conf /etc/redis/redis.conf
 
 # local storage
