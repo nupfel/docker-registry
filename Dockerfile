@@ -12,6 +12,17 @@ FROM ubuntu:14.04
 RUN apt-get update
 RUN apt-get -y upgrade
 
+# redis
+run apt-get install -y redis-server
+add redis.conf /etc/redis/redis.conf
+
+# local storage
+run mkdir -p /var/lib/docker/registry
+
+# cleanup
+RUN rm -rf /tmp/*
+apt-get clean
+
 # Install pip
 RUN apt-get -y install python-pip
 
@@ -27,9 +38,9 @@ RUN pip install /docker-registry/depends/docker-registry-core
 # Install registry
 RUN pip install file:///docker-registry#egg=docker-registry[bugsnag,newrelic,cors]
 
-ENV DOCKER_REGISTRY_CONFIG /docker-registry/config/config_sample.yml
-ENV SETTINGS_FLAVOR dev
+env DOCKER_REGISTRY_CONFIG /docker-registry/config/config.yml
+env SETTINGS_FLAVOR prod
 
 EXPOSE 5000
 
-CMD ["docker-registry"]
+cmd exec service redis-server start && docker-registry
