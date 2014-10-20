@@ -20,8 +20,8 @@ add redis.conf /etc/redis/redis.conf
 run mkdir -p /var/lib/docker/registry
 
 # cleanup
-RUN rm -rf /tmp/*
-apt-get clean
+run rm -rf /tmp/*
+run apt-get clean
 
 # Install pip
 RUN apt-get -y install python-pip
@@ -43,4 +43,4 @@ env SETTINGS_FLAVOR prod
 
 EXPOSE 5000
 
-cmd exec service redis-server start && docker-registry
+cmd service redis-server start && exec docker-registry
