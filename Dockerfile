@@ -14,7 +14,7 @@ RUN apt-get -y upgrade
 
 # redis
 RUN apt-get install -y --force-yes redis-server
-ADD redis.conf /etc/redis/redis.conf
+ADD ./config/redis.conf /etc/redis/redis.conf
 
 # local storage
 RUN mkdir -p /var/lib/docker/registry
