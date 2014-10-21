@@ -13,33 +13,33 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # redis
-run apt-get install -y --force-yes redis-server
-add redis.conf /etc/redis/redis.conf
+RUN apt-get install -y --force-yes redis-server
+ADD redis.conf /etc/redis/redis.conf
 
 # local storage
-run mkdir -p /var/lib/docker/registry
-
-# cleanup
-run rm -rf /tmp/*
-run apt-get clean
+RUN mkdir -p /var/lib/docker/registry
 
 # Install pip
-RUN apt-get -y install python-pip
+RUN apt-get -y --force-yes install python-pip
 
 # Install deps for backports.lzma (python2 requires it)
-RUN apt-get -y install python-dev liblzma-dev libevent1-dev
+RUN apt-get -y --force-yes install python-dev liblzma-dev libevent1-dev
 
 COPY . /docker-registry
 COPY ./config/boto.cfg /etc/boto.cfg
 
 # Install core
-RUN pip install /docker-registry/depends/docker-registry-core
+RUN pip install --upgrade /docker-registry/depends/docker-registry-core
 
 # Install registry
-RUN pip install file:///docker-registry#egg=docker-registry[bugsnag,newrelic,cors]
+RUN pip install --upgrade file:///docker-registry#egg=docker-registry[bugsnag,newrelic,cors]
 
-env DOCKER_REGISTRY_CONFIG /docker-registry/config/config.yml
-env SETTINGS_FLAVOR prod
+ENV DOCKER_REGISTRY_CONFIG /docker-registry/config/config.yml
+ENV SETTINGS_FLAVOR prod
+
+# cleanup
+RUN rm -rf /tmp/*
+RUN apt-get clean
 
 EXPOSE 5000
 
